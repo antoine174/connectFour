@@ -1,0 +1,7 @@
+ROWS = 6
+COLS = 7
+EMPTY = 0
+HUMAN = 1
+AI = 2
+
+COLUMN_ORDER = [3, 2, 4, 1, 5, 0, 6]
