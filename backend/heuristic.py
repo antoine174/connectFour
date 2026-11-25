@@ -26,9 +26,10 @@ FOUR_SCORE = 100
 PLAYABLE_THREAT_SCORE = 35
 FLOATING_THREAT_SCORE = 15
 OPEN_TWO_SCORE = 5
+NEXT_TURN_THREAT_BONUS = 50
 
 
-def evaluate_board(board):
+def evaluate_board(board, next_player):
     grid = board.grid
 
     if board.is_full():
@@ -41,6 +42,7 @@ def evaluate_board(board):
     locked_fours = 0
     threats = 0
     open_twos = 0
+    playable_counts = {}
 
     for window in ALL_WINDOWS:
         cells = [grid[r][c] for r, c in window]
@@ -49,7 +51,8 @@ def evaluate_board(board):
 
         if ai_count and human_count:
             continue
-        sign = 1 if ai_count else -1
+        owner = AI if ai_count else HUMAN
+        sign = 1 if owner == AI else -1
         count = max(ai_count, human_count)
 
         if count == 4:
@@ -58,10 +61,19 @@ def evaluate_board(board):
             r, c = next(cell for cell in window if grid[cell[0]][cell[1]] == EMPTY)
             if r == next_open_row[c]:
                 threats += sign * PLAYABLE_THREAT_SCORE
+                if owner == next_player:
+                    playable_counts[c] = playable_counts.get(c, 0) + 1
             else:
                 threats += sign * FLOATING_THREAT_SCORE
         elif count == 2:
             open_twos += sign * OPEN_TWO_SCORE
+
+    if playable_counts:
+        best_gain = max(playable_counts.values())
+        if next_player == AI:
+            threats += NEXT_TURN_THREAT_BONUS * best_gain
+        elif next_player == HUMAN:
+            threats -= NEXT_TURN_THREAT_BONUS * best_gain
 
     position = 0
     for r in range(ROWS):

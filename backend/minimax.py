@@ -66,7 +66,8 @@ def find_best_move(board, k):
 
 def _minimax(board, node, remaining_depth, alpha, beta, is_maximizing, stats):
     if remaining_depth == 0 or board.is_full():
-        score, _ = evaluate_board(board)
+        next_player = Board.AI if is_maximizing else Board.HUMAN
+        score, _ = evaluate_board(board, next_player)
         node.is_leaf = True
         node.value = score
         node.heuristic_value = score

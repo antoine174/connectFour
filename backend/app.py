@@ -11,9 +11,9 @@ CORS(app)
 game = {"board": Board(), "k": 4, "first_player": Board.HUMAN, "over": False}
 
 
-def build_response(ai_move=None, search_tree=None, stats=None):
+def build_response(ai_move=None, search_tree=None, stats=None, next_player=Board.HUMAN):
     board = game["board"]
-    score, breakdown = evaluate_board(board)
+    score, breakdown = evaluate_board(board, next_player)
     game_over = board.is_full()
     human_score = board.count_connected_fours(Board.HUMAN)
     ai_score = board.count_connected_fours(Board.AI)
@@ -53,8 +53,8 @@ def new_game():
     game.update(board=Board(), k=k, first_player=first)
     if first == Board.AI:
         col, tree, stats = play_ai_turn()
-        return build_response(ai_move=col, search_tree=tree, stats=stats)
-    return build_response()
+        return build_response(ai_move=col, search_tree=tree, stats=stats, next_player=Board.HUMAN)
+    return build_response(next_player=Board.HUMAN)
 
 
 @app.post("/api/move")
@@ -69,10 +69,10 @@ def move():
 
     board.drop_piece(col, Board.HUMAN)
     if board.is_full():
-        return build_response()
+        return build_response(next_player=Board.AI)
 
     ai_col, tree, stats = play_ai_turn()
-    return build_response(ai_move=ai_col, search_tree=tree, stats=stats)
+    return build_response(ai_move=ai_col, search_tree=tree, stats=stats, next_player=Board.HUMAN)
 
 
 if __name__ == "__main__":
