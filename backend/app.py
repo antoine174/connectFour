@@ -46,8 +46,8 @@ def play_ai_turn():
 def new_game():
     data = request.get_json(silent=True) or {}
     k = int(data.get("k", 4))
-    if not 1 <= k <= 6:
-        return jsonify({"error": "k must be between 1 and 6"}), 400
+    if not 1 <= k <= 10:
+        return jsonify({"error": "k must be between 1 and 10"}), 400
     first = Board.AI if data.get("first_player") == "ai" else Board.HUMAN
 
     game.update(board=Board(), k=k, first_player=first)

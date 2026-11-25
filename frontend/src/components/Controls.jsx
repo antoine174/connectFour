@@ -24,7 +24,7 @@ export default function Controls({ settings, onChange, onStart, disabled }) {
 
       <label>
         Depth K: <strong>{settings.k}</strong>
-        <input type="range" min="1" max="6" value={settings.k}
+        <input type="range" min="1" max="10" value={settings.k}
                onChange={(e) => set('k', Number(e.target.value))} />
       </label>
 
